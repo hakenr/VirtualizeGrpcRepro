@@ -2,27 +2,17 @@
 @using BlazorGrpcWebCodeFirst.Shared;
 @inject IMyService MyService
 
-<EditForm Model="@request" OnValidSubmit="Submit">
-	<InputText @bind-Value="request.Text" />
-	<InputNumber @bind-Value="request.Value" />
-	<input type="submit" value="Submit" />
-</EditForm>
-
-@if (result != null)
-{
-	@result.NewText
-	<br />
-	@result.NewValue
-	<br />
-}
+<Virtualize TItem="string" ItemsProvider="GetDataAsync">
+	<p>@context</p>
+</Virtualize>
 
 @code
 {
-	MyServiceRequest request = new MyServiceRequest() { Text = "Hello world", Value = 42 };
-	MyServiceResult? result;
-
-	async Task Submit()
+	public async ValueTask<ItemsProviderResult<string>> GetDataAsync(ItemsProviderRequest request)
 	{
-		this.result = await MyService.DoSomething(request);
+		var result = await MyService.DoSomethingAsync(new(), request.CancellationToken);
+
+		var data = result.Data.Skip(request.StartIndex).Take(request.Count);
+		return new ItemsProviderResult<string>(data, result.Data.Length);
 	}
 }

@@ -42,7 +42,6 @@ app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<MyService>();
-    endpoints.MapGrpcService<WeatherService>();
 
     endpoints.MapControllers();
     endpoints.MapFallbackToFile("index.html");

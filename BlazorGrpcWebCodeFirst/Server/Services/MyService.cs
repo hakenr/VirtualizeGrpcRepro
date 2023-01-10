@@ -1,21 +1,18 @@
-﻿using BlazorGrpcWebCodeFirst.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
+using BlazorGrpcWebCodeFirst.Shared;
 
 namespace BlazorGrpcWebCodeFirst.Server.Services;
 
 public class MyService : IMyService
 {
-	public Task<MyServiceResult> DoSomething(MyServiceRequest request)
+	public async Task<MyServiceResult> DoSomethingAsync(MyServiceRequest request, CancellationToken cancellationToken = default)
 	{
-		return Task.FromResult(new MyServiceResult()
+		await Task.Delay(1);
+		
+		return new MyServiceResult()
 		{
-			NewText = request.Text + " from server",
-			NewValue = request.Value + 1
-		});
+			Data = CultureInfo.GetCultures(CultureTypes.AllCultures).Select(ci => ci.DisplayName).ToArray()
+		};
 	}
 }
 
